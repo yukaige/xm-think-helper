@@ -1,5 +1,12 @@
 # thinkphp6 常用的一些扩展类库
 
+>* 修改背景:将TP的项目移植到Laravel
+>* 遇到问题:tp和Laravel的全局函数冲突，导致无法调用。
+>* 修改方案：重命名tp相关的ORM函数名称，不改变其内容。
+>
+* 本项目代码代码来着ThinkPHP
+* https://github.com/top-think/think-helper
+
 基于PHP7.1+
 
 [![PHP Composer](https://github.com/larvatecn/think-helper/actions/workflows/php.yml/badge.svg)](https://github.com/larvatecn/think-helper/actions/workflows/php.yml)

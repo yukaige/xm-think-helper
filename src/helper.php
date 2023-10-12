@@ -12,7 +12,7 @@
 use think\Collection;
 use think\helper\Arr;
 
-if (!function_exists('throw_if')) {
+if (!function_exists('tp_throw_if')) {
     /**
      * 按条件抛异常
      *
@@ -23,7 +23,7 @@ if (!function_exists('throw_if')) {
      *
      * @throws Throwable
      */
-    function throw_if($condition, $exception, ...$parameters)
+    function tp_throw_if($condition, $exception, ...$parameters)
     {
         if ($condition) {
             throw (is_string($exception) ? new $exception(...$parameters) : $exception);
@@ -33,7 +33,7 @@ if (!function_exists('throw_if')) {
     }
 }
 
-if (!function_exists('throw_unless')) {
+if (!function_exists('tp_throw_unless')) {
     /**
      * 按条件抛异常
      *
@@ -43,7 +43,7 @@ if (!function_exists('throw_unless')) {
      * @return mixed
      * @throws Throwable
      */
-    function throw_unless($condition, $exception, ...$parameters)
+    function tp_throw_unless($condition, $exception, ...$parameters)
     {
         if (!$condition) {
             throw (is_string($exception) ? new $exception(...$parameters) : $exception);
@@ -53,7 +53,7 @@ if (!function_exists('throw_unless')) {
     }
 }
 
-if (!function_exists('tap')) {
+if (!function_exists('tp_tap')) {
     /**
      * 对一个值调用给定的闭包，然后返回该值
      *
@@ -61,7 +61,7 @@ if (!function_exists('tap')) {
      * @param callable|null $callback
      * @return mixed
      */
-    function tap($value, $callback = null)
+    function tp_tap($value, $callback = null)
     {
         if (is_null($callback)) {
             return $value;
@@ -73,33 +73,33 @@ if (!function_exists('tap')) {
     }
 }
 
-if (!function_exists('value')) {
+if (!function_exists('tp_value')) {
     /**
      * Return the default value of the given value.
      *
      * @param mixed $value
      * @return mixed
      */
-    function value($value)
+    function tp_value($value)
     {
         return $value instanceof Closure ? $value() : $value;
     }
 }
 
-if (!function_exists('collect')) {
+if (!function_exists('tp_collect')) {
     /**
      * Create a collection from the given value.
      *
      * @param mixed $value
      * @return Collection
      */
-    function collect($value = null)
+    function tp_collect($value = null)
     {
         return new Collection($value);
     }
 }
 
-if (!function_exists('data_fill')) {
+if (!function_exists('tp_data_fill')) {
     /**
      * Fill in data where it's missing.
      *
@@ -108,13 +108,13 @@ if (!function_exists('data_fill')) {
      * @param mixed        $value
      * @return mixed
      */
-    function data_fill(&$target, $key, $value)
+    function tp_data_fill(&$target, $key, $value)
     {
-        return data_set($target, $key, $value, false);
+        return tp_data_set($target, $key, $value, false);
     }
 }
 
-if (!function_exists('data_get')) {
+if (!function_exists('tp_data_get')) {
     /**
      * Get an item from an array or object using "dot" notation.
      *
@@ -123,7 +123,7 @@ if (!function_exists('data_get')) {
      * @param mixed            $default
      * @return mixed
      */
-    function data_get($target, $key, $default = null)
+    function tp_data_get($target, $key, $default = null)
     {
         if (is_null($key)) {
             return $target;
@@ -136,13 +136,13 @@ if (!function_exists('data_get')) {
                 if ($target instanceof Collection) {
                     $target = $target->all();
                 } elseif (!is_array($target)) {
-                    return value($default);
+                    returntp_value($default);
                 }
 
                 $result = [];
 
                 foreach ($target as $item) {
-                    $result[] = data_get($item, $key);
+                    $result[] = tp_data_get($item, $key);
                 }
 
                 return in_array('*', $key) ? Arr::collapse($result) : $result;
@@ -153,7 +153,7 @@ if (!function_exists('data_get')) {
             } elseif (is_object($target) && isset($target->{$segment})) {
                 $target = $target->{$segment};
             } else {
-                return value($default);
+                returntp_value($default);
             }
         }
 
@@ -161,7 +161,7 @@ if (!function_exists('data_get')) {
     }
 }
 
-if (!function_exists('data_set')) {
+if (!function_exists('tp_data_set')) {
     /**
      * Set an item on an array or object using dot notation.
      *
@@ -171,7 +171,7 @@ if (!function_exists('data_set')) {
      * @param bool         $overwrite
      * @return mixed
      */
-    function data_set(&$target, $key, $value, $overwrite = true)
+    function tp_data_set(&$target, $key, $value, $overwrite = true)
     {
         $segments = is_array($key) ? $key : explode('.', $key);
 
@@ -182,7 +182,7 @@ if (!function_exists('data_set')) {
 
             if ($segments) {
                 foreach ($target as &$inner) {
-                    data_set($inner, $segments, $value, $overwrite);
+                    tp_data_set($inner, $segments, $value, $overwrite);
                 }
             } elseif ($overwrite) {
                 foreach ($target as &$inner) {
@@ -195,7 +195,7 @@ if (!function_exists('data_set')) {
                     $target[$segment] = [];
                 }
 
-                data_set($target[$segment], $segments, $value, $overwrite);
+                tp_data_set($target[$segment], $segments, $value, $overwrite);
             } elseif ($overwrite || !Arr::exists($target, $segment)) {
                 $target[$segment] = $value;
             }
@@ -205,7 +205,7 @@ if (!function_exists('data_set')) {
                     $target->{$segment} = [];
                 }
 
-                data_set($target->{$segment}, $segments, $value, $overwrite);
+                tp_data_set($target->{$segment}, $segments, $value, $overwrite);
             } elseif ($overwrite || !isset($target->{$segment})) {
                 $target->{$segment} = $value;
             }
@@ -213,7 +213,7 @@ if (!function_exists('data_set')) {
             $target = [];
 
             if ($segments) {
-                data_set($target[$segment], $segments, $value, $overwrite);
+                tp_data_set($target[$segment], $segments, $value, $overwrite);
             } elseif ($overwrite) {
                 $target[$segment] = $value;
             }
@@ -223,46 +223,46 @@ if (!function_exists('data_set')) {
     }
 }
 
-if (!function_exists('trait_uses_recursive')) {
+if (!function_exists('tp_trait_uses_recursive')) {
     /**
      * 获取一个trait里所有引用到的trait
      *
      * @param string $trait Trait
      * @return array
      */
-    function trait_uses_recursive(string $trait): array
+    function tp_trait_uses_recursive(string $trait): array
     {
         $traits = class_uses($trait);
         foreach ($traits as $trait) {
-            $traits += trait_uses_recursive($trait);
+            $traits += tp_trait_uses_recursive($trait);
         }
 
         return $traits;
     }
 }
 
-if (!function_exists('class_basename')) {
+if (!function_exists('tp_class_basename')) {
     /**
      * 获取类名(不包含命名空间)
      *
      * @param mixed $class 类名
      * @return string
      */
-    function class_basename($class): string
+    function tp_class_basename($class): string
     {
         $class = is_object($class) ? get_class($class) : $class;
         return basename(str_replace('\\', '/', $class));
     }
 }
 
-if (!function_exists('class_uses_recursive')) {
+if (!function_exists('tp_class_uses_recursive')) {
     /**
      *获取一个类里所有用到的trait，包括父类的
      *
      * @param mixed $class 类名
      * @return array
      */
-    function class_uses_recursive($class): array
+    function tp_class_uses_recursive($class): array
     {
         if (is_object($class)) {
             $class = get_class($class);
@@ -271,7 +271,7 @@ if (!function_exists('class_uses_recursive')) {
         $results = [];
         $classes = array_merge([$class => $class], class_parents($class));
         foreach ($classes as $class) {
-            $results += trait_uses_recursive($class);
+            $results += tp_trait_uses_recursive($class);
         }
 
         return array_unique($results);
